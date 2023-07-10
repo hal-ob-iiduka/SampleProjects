@@ -9,8 +9,7 @@ int main()
 	// 実行タイミングを指定。
 	JobSystem::Get().Get().AddJob(FunctionType::Update, &job);
 
-
-	while (true)
+	//while (true)
 	{
 		JobSystem::Get().Execute(0.01f, FunctionType::PreUpdate);
 		JobSystem::Get().Execute(0.01f, FunctionType::Update);
