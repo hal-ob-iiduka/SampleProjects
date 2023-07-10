@@ -1,6 +1,6 @@
 #include "JobSystem.h"
 
-void JobSystem::Initialize()
+void JobSystem::InitSystem()
 {
 	// 起動！（これはm_threadの起動より前に呼ぶ必要がある）
 	m_isRunning = true;
@@ -9,7 +9,7 @@ void JobSystem::Initialize()
 	m_thread = std::thread(&JobSystem::ThreadLoop, this);
 }
 
-void JobSystem::DeInitialize()
+void JobSystem::TermSystem()
 {
 	// ThreadLoop関数に対して終了を通知する
 	std::unique_lock<std::mutex> lock(m_mutex);

@@ -23,8 +23,8 @@ public:
 	}
 
 	// 初期化、終了用の関数
-	void Initialize();
-	void DeInitialize();
+	void InitSystem();
+	void TermSystem();
 
 	// ジョブの登録用関数
 	void AddJob(FunctionType type, Job* job);
