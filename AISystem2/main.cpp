@@ -31,6 +31,28 @@ enum EventTrigger
     ToJump
 };
 
+class RootState : public State<Player>
+{
+public:
+
+    RootState(Player* context) : State(context)
+    {
+        // 使用する状態の追加
+        AddChildState<IdleState>();
+        AddChildState<JumpState>();
+
+        // IdleStateからJumpStateに遷移する条件を登録
+        AddChildTransition<IdleState, JumpState>(EventTrigger::ToJump);
+
+        // 最初のステートをセット
+        SetCurrentState<IdleState>();
+    }
+
+    void OnEnter()  override { printf("OnEnter Root\n"); }
+    void OnUpdate() override { printf("OnUpdate Root\n"); }
+    void OnExit()   override { printf("OnExit Root\n"); }
+};
+
 class Player
 {
 public:
@@ -38,14 +60,10 @@ public:
     Player() : m_stateMachine(this)
     {
         // 使用する状態の追加
-        m_stateMachine.AddState<IdleState>();
-        m_stateMachine.AddState<JumpState>();
-
-        // IdleStateからJumpStateに遷移する条件を登録
-        m_stateMachine.AddTransition<IdleState, JumpState>(EventTrigger::ToJump);
+        m_stateMachine.AddState<RootState>();
 
         // 最初のステートをセット
-        m_stateMachine.SetStartState<IdleState>();
+        m_stateMachine.SetStartState<RootState>();
     }
 
     void Update()

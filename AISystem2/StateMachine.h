@@ -1,6 +1,4 @@
 #pragma once
-#include <memory>
-#include <map>
 #include "State.h"
 
 template<class T>
@@ -17,7 +15,7 @@ public:
 	template<class T>
 	void SetStartState()
 	{
-		auto stateId = typeid(T).hash_code();
+		auto stateId  = typeid(T).hash_code();
 		auto hasState = m_stateMap.contains(stateId);
 
 		if (hasState == false)
@@ -27,14 +25,14 @@ public:
 
 		// 状態が登録されていれば遷移
 		ChangeState(stateId);
-	}
+	}	
 
 	// 現在ステートを保持していれば更新する。
 	void Update()
 	{
 		if (m_currentState.expired() == false)
 		{
-			m_currentState.lock()->OnUpdate();
+			m_currentState.lock()->SendUpdate();
 		}
 	}
 
@@ -72,12 +70,19 @@ public:
 
 	void SendTrigger(int eventId)
 	{
+		if (m_currentState.expired())
+		{
+			return;
+		}
+
 		// 遷移条件が登録されていればChageState関数を呼ぶ。
 		int stateId = 0;
 		if (m_currentState.lock()->TryGetTransition(eventId, stateId))
 		{
 			ChangeState(stateId);
 		}
+
+		m_currentState.lock()->SendTrigger(eventId);
 	}
 
 private:
@@ -87,12 +92,12 @@ private:
 		// 既にステートが入ってたら終了処理を呼ぶ。
 		if (m_currentState.expired() == false)
 		{
-			m_currentState.lock()->OnExit();
+			m_currentState.lock()->SendExit();
 		}
 
 		// 新しくステートを生成して初期化している。
 		m_currentState = m_stateMap[stateId];
-		m_currentState.lock()->OnEnter();
+		m_currentState.lock()->SendEnter();
 	}
 
 private:
@@ -100,6 +105,9 @@ private:
 	// このクラスを保持するオブジェクト（Playerとか）
 	T* m_context;
 
-	// 現在セットされているルートステートオブジェクト
-	std::shared_ptr<State<T>> m_rootState;
+	// 現在セットされたステートオブジェクト
+	std::weak_ptr<State<T>> m_currentState;
+
+	// 各状態のIDとオブジェクトへのマップ
+	std::map<int, std::shared_ptr<State<T>>> m_stateMap;
 };
