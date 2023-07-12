@@ -141,6 +141,17 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ActionNode.h" />
+    <ClInclude Include="BaseNode.h" />
+    <ClInclude Include="BehaviorTree.h" />
+    <ClInclude Include="ConditionNode.h" />
+    <ClInclude Include="DecoratorNode.h" />
+    <ClInclude Include="ParallelNode.h" />
+    <ClInclude Include="RepeaterNode.h" />
+    <ClInclude Include="SelectorNode.h" />
+    <ClInclude Include="SequencerNode.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
