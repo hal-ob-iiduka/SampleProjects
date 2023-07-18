@@ -61,11 +61,11 @@ protected:
     NodeState m_state;
 };
 
-class BranchNode : public Node
+class InternalNode : public Node
 {
 public:
 
-    virtual ~BranchNode() {};
+    virtual ~InternalNode() {};
 
     // qƒm[ƒh‚ğ’Ç‰Á‚·‚éŠÖ”
     void AddChild(std::shared_ptr<Node> node)

@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseNode.h"
 
-class SequencerNode : public BranchNode
+class SequencerNode : public InternalNode
 {
 public:
 
@@ -15,10 +15,10 @@ public:
 	{
 		// 子ノードを順に更新していきます。
 		// 実行中か失敗が返されたら終了します。
-		for (auto i = m_childIndex; i < m_children.size(); m_childIndex++)
+		for (auto& i = m_childIndex; i < m_children.size(); m_childIndex++)
 		{
 			auto child = m_children[i];
-			auto state = child->OnUpdate();
+			auto state = child->Execute();
 
 			// 成功したら次の子ノードへ
 			if (state != NodeState::Success)

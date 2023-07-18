@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseNode.h"
 
-class SelectorNode : public BranchNode
+class SelectorNode : public InternalNode
 {
 public:
 
@@ -15,7 +15,7 @@ public:
 	{
 		// 子ノードを順に更新していきます。
 		// 実行中か成功が返されたら終了します。
-		for (auto i = m_childIndex; i < m_children.size(); m_childIndex++)
+		for (auto& i = m_childIndex; i < m_children.size(); m_childIndex++)
 		{
 			auto child = m_children[i];
 			auto state = child->OnUpdate();
@@ -41,3 +41,13 @@ private:
 	// 現在処理されている子ノードインデックス。
 	int m_childIndex;
 };
+
+
+
+
+
+
+
+
+
+

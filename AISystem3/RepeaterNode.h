@@ -2,7 +2,7 @@
 #include <functional>
 #include "BaseNode.h"
 
-class RepeaterNode : public BranchNode
+class RepeaterNode : public InternalNode
 {
 public:
 

@@ -2,7 +2,7 @@
 #include <functional>
 #include "BaseNode.h"
 
-class ParallelNode : public BranchNode
+class ParallelNode : public InternalNode
 {
 public:
 

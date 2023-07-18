@@ -32,3 +32,13 @@ private:
 	// ÀÛ‚Ìs“®ˆ—‚ğ•Û‚·‚éB
 	std::function<NodeState()> m_action;
 };
+
+
+
+
+
+
+
+
+
+
