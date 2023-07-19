@@ -19,7 +19,7 @@ public:
 	NodeState OnUpdate() override
 	{
 		// ğŒ”»’è‚ª¬Œ÷‚©¸”s‚©‚ğA—ñ‹“Œ^‚É•ÏŠ·‚µ‚Ä•Ô‚µ‚Ü‚·B
-		return m_state = m_action() ? NodeState::Success : NodeState::Failure;
+		return m_action() ? NodeState::Success : NodeState::Failure;
 	}
 
 	void OnExit() override

@@ -6,9 +6,9 @@ class ParallelNode : public InternalNode
 {
 public:
 
-	void OnEnter()
+	void OnEnter() override
 	{
-
+		m_state = NodeState::Running;
 	}
 
 	NodeState OnUpdate() override

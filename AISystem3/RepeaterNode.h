@@ -37,6 +37,8 @@ public:
 
 		// リピート中なら子ノードをリセットして更新準備をする。
 		m_children[0]->Reset();
+
+		return NodeState::Running;
 	}
 
 	void OnExit() override

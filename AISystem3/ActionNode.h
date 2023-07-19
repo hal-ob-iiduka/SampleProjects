@@ -19,7 +19,7 @@ public:
 	NodeState OnUpdate() override
 	{
 		// 設定された処理の戻り値をそのまま返します。
-		return m_state = m_action();
+		return m_action();
 	}
 
 	void OnExit() override
@@ -29,16 +29,6 @@ public:
 
 private:
 
-	// 実際の行動処理を保持する。
+	// 実際の振る舞い処理を保持する。
 	std::function<NodeState()> m_action;
 };
-
-
-
-
-
-
-
-
-
-

@@ -21,7 +21,7 @@ int main()
     // 家を出てコンビニを目指す。
     auto action1 = std::make_shared<ActionNode>([]()
     {
-        printf("家を出、近くのコンビニへ行く。\n");
+        printf("家を出る\n");
         return NodeState::Success;
     });
 

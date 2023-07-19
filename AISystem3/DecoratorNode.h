@@ -18,18 +18,16 @@ public:
 
 	NodeState OnUpdate() override
 	{
-		// 条件判定が成功していれば子ノードを処理します。
 		if (m_action())
 		{
-			m_state = m_children[0]->OnUpdate();
+			// 条件判定が成功していれば、子ノードを処理しそのまま結果を返します。
+			return m_children[0]->Execute();
 		}
 		else
 		{
 			// 条件判定が失敗したら終了。
-			m_state = NodeState::Failure;
+			return NodeState::Failure;
 		}
-
-		return m_state;
 	}
 
 	void OnExit() override
