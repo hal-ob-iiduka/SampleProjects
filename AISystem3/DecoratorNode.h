@@ -6,7 +6,7 @@ class DecoratorNode : public InternalNode
 {
 public:
 
-	DecoratorNode(std::function<bool()> action)
+	DecoratorNode(std::function<bool()>&& action)
 	{
 		m_action = action;
 	}

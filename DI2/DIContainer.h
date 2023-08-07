@@ -19,7 +19,7 @@ public:
 
 	// Keyの生成設定を登録する関数
 	template<class Key>
-	void Register(Provider func)
+	void Register(Provider&& func)
 	{
 		auto typeId = typeid(Key).hash_code();
 		auto hasType = m_providerMap.contains(typeId);
@@ -53,9 +53,3 @@ private:
 	// 生成クラスIdとオブジェクトの生成関数へのマップ
 	std::map<TypeId, Provider> m_providerMap;
 };
-
-
-
-
-
-

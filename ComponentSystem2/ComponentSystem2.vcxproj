@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{df8fe209-0c70-4360-96ce-cc679ca4cac8}</ProjectGuid>
-    <RootNamespace>AISystem3</RootNamespace>
+    <ProjectGuid>{e00ee1f5-71d4-4fed-8553-f7a0ed3b9db6}</ProjectGuid>
+    <RootNamespace>ComponentSystem2</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -116,6 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
@@ -143,15 +144,13 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ActionNode.h" />
-    <ClInclude Include="BaseNode.h" />
-    <ClInclude Include="BehaviorTree.h" />
-    <ClInclude Include="ConditionNode.h" />
-    <ClInclude Include="DecoratorNode.h" />
-    <ClInclude Include="ParallelNode.h" />
-    <ClInclude Include="RepeaterNode.h" />
-    <ClInclude Include="SelectorNode.h" />
-    <ClInclude Include="SequencerNode.h" />
+    <ClInclude Include="Archetype.h" />
+    <ClInclude Include="ArchetypeChunk.h" />
+    <ClInclude Include="ComponentArray.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="System.h" />
+    <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

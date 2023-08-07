@@ -6,7 +6,7 @@ class ActionNode : public LeafNode
 {
 public:
 
-	ActionNode(std::function<NodeState()> action)
+	ActionNode(std::function<NodeState()>&& action)
 	{
 		m_action = action;
 	}

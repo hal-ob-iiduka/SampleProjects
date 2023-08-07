@@ -11,14 +11,14 @@ public:
 
 	void AddFunc(Func&& func)
 	{
-		functions.push_back(std::move(func));
+		functions.push_back(std::forward<Func>(func));
 	}
 
-	void Invoke(Args... args)
+	void Invoke(Args&&... args)
 	{
 		for (auto& func : functions)
 		{
-			func(args...);
+			func(std::forward<Args>(args)...);
 		}
 	}
 
@@ -35,7 +35,7 @@ public:
 
 	void AddFunc(Func&& func)
 	{
-		functions.push_back(std::move(func));
+		functions.push_back(std::forward<Func>(func));
 	}
 
 	void Invoke()

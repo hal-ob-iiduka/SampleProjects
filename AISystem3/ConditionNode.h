@@ -6,7 +6,7 @@ class ConditionNode : public LeafNode
 {
 public:
 
-	ConditionNode(std::function<bool()> action)
+	ConditionNode(std::function<bool()>&& action)
 	{
 		m_action = action;
 	}
