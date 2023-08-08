@@ -67,7 +67,7 @@ public:
 	{
 		assert(IsValid(entity));
 		auto oldChunk = m_entityChunkMap[entity];
-		auto archetype = GetArchetype<T>(oldChunk);
+		auto archetype = GetArchetype<T>(oldChunk.lock()->GetArchetype());
 
 		// 新しいデータ格納用チャンクを取得
 		auto newChunk = GetOrAddChunk(archetype);
@@ -210,23 +210,23 @@ private:
 
 	// 指定型を保持した、ArchetypeIDを生成＆取得（ArchetypeIDの初期値を設定出来るようにしてる）
 	template<typename... Args>
-	Archetype GetArchetype(std::weak_ptr<ArchetypeChunk> chunk = {})
+	Archetype GetArchetype(const Archetype& archetype = {})
 	{
-		Archetype archetype{ TypeIDGenerator::GetID<Args>()... };
+		Archetype newArchetype { TypeIDGenerator::GetID<Args>()... };
 
-		// Chunkが正常値なら、Chunkが持つArchetypeを追加
-		if (!chunk.expired())
+		// 初期値が指定されていれば追加
+		if (!archetype.empty())
 		{
-			for (auto& typeId : chunk.lock()->GetArchetype())
+			for (auto& typeId : archetype)
 			{
-				archetype.emplace_back(typeId);
+				newArchetype.emplace_back(typeId);
 			}
 		}
 
 		// 昇順に並べ替え（比較処理を簡単にするため）
-		std::sort(archetype.begin(), archetype.end());
+		std::sort(newArchetype.begin(), newArchetype.end());
 
-		return archetype;
+		return newArchetype;
 	}
 
 	// チャンクを必ず返す（絶対に戻り値が空にならない）
