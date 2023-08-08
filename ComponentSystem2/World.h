@@ -14,7 +14,7 @@ public:
 
 	void Init()
 	{
-		for (auto system : m_systems)
+		for (auto& system : m_systems)
 		{
 			system->Init();
 		}
@@ -22,7 +22,7 @@ public:
 
 	void Update(float deltaTime)
 	{
-		for (auto system : m_systems)
+		for (auto& system : m_systems)
 		{
 			system->Update(deltaTime);
 		}
@@ -32,27 +32,26 @@ public:
 
 	// ワールドで使用されるシステムの登録
 	template<class T>
-	std::weak_ptr<T> RegisterSystem()
+	T* RegisterSystem()
 	{
-		auto system = std::make_shared<T>(this, m_entityManager.get());
+		auto system = new T(this, m_entityManager.get());
 		m_systems.emplace_back(system);
 		return system;
 	}
 
 	// ワールドで使用されているシステムの取得
 	template<class T>
-	std::weak_ptr<T> GetSystem()
+	T* GetSystem()
 	{
 		for (auto& system : m_systems)
 		{
 			if (typeid(*system.get()) == typeid(T))
 			{
-				// shared_ptr のキャスト関数
-				return std::dynamic_pointer_cast<T>(system);
+				return static_cast<T*>(system.get());
 			}
 		}
 
-		return std::weak_ptr<T>();
+		return nullptr;
 	}
 
 protected:
@@ -61,5 +60,5 @@ protected:
 	std::unique_ptr<EntityManager> m_entityManager;
 
 	// Worldに登録された更新システム配列
-	std::vector<std::shared_ptr<ISystem>> m_systems;
+	std::vector<std::unique_ptr<ISystem>> m_systems;
 };

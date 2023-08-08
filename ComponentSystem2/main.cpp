@@ -85,7 +85,7 @@ public:
 	void Update(float deltaTime) override {}
 };
 
-
+// RigidBodyのパラメーターからTransformを変化させるシステム
 class PhysicsSystem : public ISystem
 {
 public:
@@ -112,7 +112,6 @@ public:
 
 	void Update(float deltaTime) override
 	{
-		// スピードによって移動させるプログラム
 		m_entityManager->ForEach<Transform, RigidBody>([&](Transform& trans, RigidBody& rb)
 		{
 			trans.x += rb.speed * deltaTime;
@@ -126,7 +125,7 @@ int main()
 	World world;
 
 	// システムを登録
-	world.RegisterSystem<TestSystem>();
+	//world.RegisterSystem<TestSystem>();
 	world.RegisterSystem<PhysicsSystem>();
 
 	// システムの初期化

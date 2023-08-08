@@ -171,13 +171,13 @@ public:
 	void ForEach(Func&& func)
 	{
 		auto&& targetType = GetArchetype<Args...>();
-		
-		// 指定された型を持つ、全てのチャンクを取得
-		std::vector<std::weak_ptr<ArchetypeChunk>> chunkRefs;
-		for (auto chunk : m_chunkMap)
+
+		// 指定された型を持つ、全てのチャンクを取得（キャッシュしておいた方が良い）
+		std::vector<ArchetypeChunk*> chunkRefs;
+		for (auto chunk : m_chunks)
 		{
 			auto containAll = true;
-			auto chunkType = chunk.second->GetArchetype();
+			auto chunkType = chunk->GetArchetype();
 
 			for (const auto& id : targetType)
 			{
@@ -192,17 +192,16 @@ public:
 			// Chunkが指定された型を全て持っていれば追加
 			if (containAll)
 			{
-				chunkRefs.emplace_back(chunk.second);
+				chunkRefs.emplace_back(chunk.get());
 			}
 		}
-		
+
 		// 指定された関数を実行
 		for (auto chunkRef : chunkRefs)
 		{
-			const auto& chunkType = chunkRef.lock()->GetArchetype();
-			for (auto entity : m_archetypeEntitiesMap[chunkType])
+			for (const auto& entity : chunkRef->GetEntities())
 			{
-				std::apply(func, std::forward_as_tuple(chunkRef.lock()->Get<Args>(entity)...));
+				std::apply(func, std::forward_as_tuple(chunkRef->Get<Args>(entity)...));
 			}
 		}
 	}
@@ -236,12 +235,14 @@ private:
 		auto& chunk = m_chunkMap[archetype];
 
 		// chunk が空の（Addだった）場合は初期化する。
-		if (!chunk)
+		if (chunk.expired())
 		{
-			chunk = std::make_shared<ArchetypeChunk>(archetype);
+			auto newChunk = std::make_shared<ArchetypeChunk>(archetype);
+			m_chunks.emplace_back(newChunk);
+			chunk = newChunk;
 		}
 
-		assert(chunk);
+		assert(!chunk.expired());
 		return chunk;
 	}
 
@@ -251,16 +252,14 @@ private:
 		// 移動前のチェンクデータとのリンクを解除
 		if (!oldChunk.expired())
 		{
-			const auto& archetype = oldChunk.lock()->GetArchetype();
-			auto& entities = m_archetypeEntitiesMap[archetype];
+			auto& entities = oldChunk.lock()->GetEntities();
 			entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.cend());
 		}
 
 		// 移動先のチャンクデータとをリンクさせる
 		if (!newChunk.expired())
 		{
-			const auto& archetype = newChunk.lock()->GetArchetype();
-			auto& entities = m_archetypeEntitiesMap[archetype];
+			auto& entities = newChunk.lock()->GetEntities();
 			entities.emplace_back(entity);
 
 			m_entityChunkMap[entity] = newChunk;
@@ -281,12 +280,12 @@ private:
 	// Worldでの再利用待ちEntity群（DestoryされたEntity達）
 	std::set<Entity> m_recicledEntities;
 
+	// Worldで生成されたChunkオブジェクト
+	std::vector<std::shared_ptr<ArchetypeChunk>> m_chunks;
+
 	// ArchetypeごとのChunkへのマップ（同一キーは存在しないが、vectorをキーとしているためunordered_mapは使用出来ない。）
-	std::map<Archetype, std::shared_ptr<ArchetypeChunk>> m_chunkMap;
+	std::map<Archetype, std::weak_ptr<ArchetypeChunk>> m_chunkMap;
 
 	// Entityが所属するChunkへのマップ（所属先がない場合は null）
 	std::map<Entity, std::weak_ptr<ArchetypeChunk>> m_entityChunkMap;
-
-	// Archetypeから対応するEntity群へのマップ（ChunkからEntityの取得等で使用）
-	std::map<Archetype, std::vector<Entity>> m_archetypeEntitiesMap;
 };

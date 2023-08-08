@@ -6,7 +6,7 @@
 // 同じArchetypeを持つEntityのコンポーネントデータを保持
 struct ArchetypeChunk
 {
-	using ComponentDataMap = std::map<size_t, std::shared_ptr<IComponentArray>>;
+	using ComponentDataMap = std::map<TypeID, std::unique_ptr<IComponentArray>>;
 public:
 
 	ArchetypeChunk(const Archetype& archetype) : m_archetype(archetype)
@@ -73,7 +73,7 @@ public:
 			}
 
 			// このオブジェクトからchunkへ移動させる
-			component.second->Move(entity, chunk.lock()->GetContainer(component.first).get());
+			component.second->Move(entity, chunk.lock()->GetContainer(component.first));
 		}
 	}
 
@@ -92,7 +92,7 @@ public:
 			// テンプレート型は別途処理を記述（Add時のみ有効）
 			if (typeId == targetId)
 			{
-				m_componentMap[typeId] = std::make_shared<ComponentArray<T>>();
+				m_componentMap[typeId] = std::make_unique<ComponentArray<T>>();
 				continue;
 			}
 
@@ -116,23 +116,24 @@ private:
 	//=====================================
 
 	template<class T>
-	std::shared_ptr<ComponentArray<T>> GetContainer()
+	ComponentArray<T>* GetContainer()
 	{
 		// コンポーネントタイプ取得
 		auto typeId = TypeIDGenerator::GetID<T>();
 		assert(m_componentMap.contains(typeId));
 
-		// ComponentArrayを指定型にキャスト（std::shared_ptr用のキャスト関数）
-		auto components = std::dynamic_pointer_cast<ComponentArray<T>>(m_componentMap[typeId]);
-		assert(components);
+		// ComponentArrayを指定型にキャスト（安全性取るならdynamic_cast）
+		//auto components = dynamic_cast<ComponentArray<T>*>(m_componentMap[typeId].get());
+		//assert(components);
 
-		return components;
+		// ComponentArrayを指定型にキャスト（速度取るならstatic_cast、このサンプルでは2000ミリ秒ほど変わる）
+		return static_cast<ComponentArray<T>*>(m_componentMap[typeId].get());
 	}
 
-	std::shared_ptr<IComponentArray> GetContainer(size_t typeId)
+	IComponentArray* GetContainer(size_t typeId)
 	{
 		assert(m_componentMap.contains(typeId));
-		return m_componentMap[typeId];
+		return m_componentMap[typeId].get();
 	}
 
 	template<class T>
@@ -154,6 +155,16 @@ public:
 		return m_archetype;
 	}
 
+	std::vector<Entity>& GetEntities()
+	{
+		return m_entities;
+	}
+
+	const std::vector<Entity>& GetEntities() const
+	{
+		return m_entities;
+	}
+
 private:
 
 	// このチャンクのArchetypeを保持
@@ -161,4 +172,7 @@ private:
 
 	// コンポーネントデータ配列マップ
 	ComponentDataMap m_componentMap;
+
+	// チャンクが保持するEntity群
+	std::vector<Entity> m_entities;
 };
