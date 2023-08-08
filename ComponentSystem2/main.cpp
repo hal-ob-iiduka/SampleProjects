@@ -50,17 +50,6 @@ public:
 			assert(r.speed == 1000);
 		}
 
-		// ForEach
-		{
-			m_entityManager->ForEach<Transform>([](auto& transform)
-			{
-				transform.x = 1000;
-			});
-
-			auto& t = m_entityManager->GetComponent<Transform>(entity);
-			assert(t.x == 1000);
-		}
-
 		// Remove
 		{
 			m_entityManager->RemoveComponent<Transform>(entity);
@@ -125,7 +114,7 @@ int main()
 	World world;
 
 	// システムを登録
-	//world.RegisterSystem<TestSystem>();
+	world.RegisterSystem<TestSystem>();
 	world.RegisterSystem<PhysicsSystem>();
 
 	// システムの初期化

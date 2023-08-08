@@ -15,12 +15,19 @@ struct IComponentArray
 
 	virtual void Remove(size_t id) = 0;
 
+	virtual bool Has(size_t id) = 0;
+
 	virtual void Move(size_t id, IComponentArray* components) = 0;
 };
 
 template<class T>
 struct ComponentArray : public IComponentArray
 {
+private:
+	static inline size_t nullPosition { std::numeric_limits<Entity>::max() };
+
+public:
+
 	std::unique_ptr<IComponentArray> Create() override
 	{
 		return std::make_unique<ComponentArray<T>>();
@@ -71,7 +78,12 @@ struct ComponentArray : public IComponentArray
 		// 末端データを消去
 		m_datas.pop_back();
 		m_toSparse.pop_back();
-		m_toDense[id] = null_entity;
+		m_toDense[id] = nullPosition;
+	}
+
+	bool Has(size_t id) override
+	{
+		return std::binary_search(m_toDense.begin(), m_toDense.end(), id);
 	}
 
 	void Move(size_t id, IComponentArray* ptr) override
