@@ -1,6 +1,11 @@
 #pragma once
 #include <string>
-#include <functional>
+#include "Event.h"
+
+/**
+* 非同期ロード時の実行中に呼び出されるデリゲート
+*/
+DECLARE_DELEGATE_PRAM_1(LoadAsyncDelegate, const std::string&)
 
 /** 
 * 第一引数には、ロードするアセットパスを、
@@ -10,4 +15,4 @@
 * このサンプルを拡張していくと考えた際、I/O処理とコンバート処理を別スレッドで実装する場合など想像すると
 * 今回の実装だと結構作りやすいんではないでしょうか。（もっと良い方法はあると思いますが）
 */
-void LoadAssetAsync(const std::string& asseetPath, std::function<void(const std::string&)> loadFunc);
+void LoadAssetAsync(const std::string& asseetPath, LoadAsyncDelegate loadAsyncDelegate = LoadAsyncDelegate());

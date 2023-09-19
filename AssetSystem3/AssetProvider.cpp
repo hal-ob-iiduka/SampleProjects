@@ -3,7 +3,7 @@
 #include "AssetLoader.h"
 #include <assert.h>
 
-std::shared_ptr<AssetHandle> IAssetProvider::Provide(const std::string& assetPath, bool IsStartStalled)
+std::shared_ptr<AssetHandle> IAssetProvider::Provide(const std::string& assetPath, bool IsStartStalled /* = false */)
 {
 	// 新規ハンドルの生成
 	auto handle = std::make_shared<AssetHandle>();
@@ -85,6 +85,9 @@ void IAssetProvider::AsyncLoadCallback(const std::string& assetPath, std::shared
 	auto providedData = GetProvidedData(assetPath);
 	if (providedData)
 	{
+		// ロードが終了したことを通知
+		providedData->m_asyncLoading = false;
+
 		if (!providedData->m_target)
 		{
 			// ロードされたオブジェクトをキャッシュ
@@ -109,4 +112,4 @@ void IAssetProvider::CompletedLoadRequests(std::shared_ptr<ProvidedData> provide
 		providedData->m_loadingHandles.clear();
 		providedData->m_loadingHandles.shrink_to_fit();
 	}
-}}
+}

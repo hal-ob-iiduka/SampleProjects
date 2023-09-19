@@ -35,8 +35,8 @@ public:
 	std::shared_ptr<IAsset> Get() const;
 
 	/** ロードが既に終了している場合は考慮してません。*/
-	template<class Func>
-	void BindCompletedEvent(Func&& func)
+	template<typename Func>
+	void AddCompletedEvent(Func&& func)
 	{
 		if (!IsVaild())
 		{
