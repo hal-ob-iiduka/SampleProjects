@@ -35,5 +35,6 @@ int main()
     assetManager.RegisterProvider<ModelProvider>();
 
     // モデルデータをロードする。
-    auto model = assetManager.Load("Model", "Test.model");
+    auto handle = assetManager.Load("Model", "Test.model");
+    auto model = handle->Get<Model>();
 }
