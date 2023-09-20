@@ -1,12 +1,14 @@
 #pragma once
-#include <string>
 #include <memory>
-#include <atomic>
-#include "Event.h"
 #include "Asset.h"
 
 class IAssetProvider;
 
+/**
+* 現在は何も効果はなく、
+* ただポインタをラップしているだけですが、
+* これが後々めっちゃ役に立ちます。
+*/
 class AssetHandle
 {
 	friend class IAssetProvider;
@@ -15,12 +17,7 @@ public:
 	/** Get関数が呼び出し可能な時、真を返します。*/
 	bool IsVaild() const
 	{
-		return m_isCompleteLoad.load();
-	}
-
-	const std::string& GetAssetPath() const
-	{
-		return m_assetPath;
+		return !!m_asset;
 	}
 
 public:
@@ -32,45 +29,16 @@ public:
 	}
 
 	/** このハンドルが指す、アセットを返します。*/
-	std::shared_ptr<IAsset> Get() const;
-
-	/** ロードが既に終了している場合は考慮してません。*/
-	template<typename Func>
-	void AddCompletedEvent(Func&& func)
+	std::shared_ptr<IAsset> Get() const
 	{
-		if (!IsVaild())
-		{
-			m_completedEvent.Add(std::move(func));
-		}
+		return m_asset;
 	}
 
 private:
-
-	/** 登録された全ての完了イベントを処理 */
-	void CompleteLoad()
-	{
-		if (!IsVaild())
-		{
-			m_isCompleteLoad = true;
-
-			// コンプリートイベントを実行
-			m_completedEvent.Execute();
-			m_completedEvent.Clear();
-		}
-	}
-
-private:
-
-	/** ロードが終了し、アクセス可能なら真になる。 */
-	std::atomic_bool m_isCompleteLoad;
 
 	/** ロード申請したマネージャークラス */
 	IAssetProvider* m_ownerProvider;
 
 	/** ロードしたアセットへのパス */
-	std::string m_assetPath;
-
-	/** ロード完了時に呼ばれるイベント */
-	DECLARE_EVENT(CompletedEvent)
-	CompletedEvent m_completedEvent;
+	std::shared_ptr<IAsset> m_asset;
 };

@@ -1,6 +1,6 @@
 ﻿#include <iostream>
+#include <assert.h>
 #include "AssetManager.h"
-#include "AssetProvider.h"
 
 class Model : public IAsset
 {
@@ -11,19 +11,20 @@ class ModelProvider : public IAssetProvider
 {
 public:
 
-    const std::type_info& GetProviderId() const override
+    std::string GetProviderId() const override
     {
-        return typeid(Model);
+        return "Model";
     }
 
     /** モデルアセットのロード処理を実現する。*/
-    std::shared_ptr<IAsset> Load(const std::string& assetPath) const override
+    std::shared_ptr<IAsset> AsyncLoad(const std::string& assetPath) override
     {
         // 専用ロード処理を実現しているとする。
-        std::cout << "モデルデータをロードしました。\n";
+        std::cout << "ロード中\n";
 
         // 成功すれば正常なアセットデータを返す。
-        return std::shared_ptr<IAsset>();
+        auto model = std::make_shared<Model>();
+        return std::static_pointer_cast<IAsset>(model);
     }
 };
 
@@ -35,6 +36,19 @@ int main()
     assetManager.RegisterProvider<ModelProvider>();
 
     // モデルデータをロードする。
-    auto handle = assetManager.Load<Model>("Test.model");
+    auto handle = assetManager.Load("Model", "Test.model");
+
+    handle->AddCompletedEvent([] 
+    {
+        std::cout << "完了！\n";
+    });
+
+    // ロード終了するまで待機
+    while (!handle->IsVaild())
+    {
+
+    }
+
     auto model = handle->Get<Model>();
+    assert(model);
 }
