@@ -2,13 +2,18 @@
 #include "AssetManager.h"
 #include "AssetProvider.h"
 
+class Model : public IAsset
+{
+public:
+};
+
 class ModelProvider : public IAssetProvider
 {
 public:
 
-    std::string GetProviderId() const override
+    const std::type_info& GetProviderId() const override
     {
-        return "Model";
+        return typeid(Model);
     }
 
     /** モデルアセットのロード処理を実現する。*/
@@ -22,11 +27,6 @@ public:
     }
 };
 
-class Model : public IAsset
-{
-public:
-};
-
 int main()
 {
     AssetManager assetManager;
@@ -35,6 +35,6 @@ int main()
     assetManager.RegisterProvider<ModelProvider>();
 
     // モデルデータをロードする。
-    auto handle = assetManager.Load("Model", "Test.model");
+    auto handle = assetManager.Load<Model>("Test.model");
     auto model = handle->Get<Model>();
 }

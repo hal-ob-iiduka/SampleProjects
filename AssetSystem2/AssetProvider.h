@@ -5,8 +5,7 @@
 #include <unordered_map>
 #include <assert.h>
 #include "Asset.h"
-
-class AssetHandle;
+#include "AssetHandle.h"
 
 /**
 * アセットのロード、アンロード処理を実装する。
@@ -17,7 +16,7 @@ class IAssetProvider
 public:
 
 	/** このプロバイダーを定義する一位のID、大抵の場合はアセットタイプを指す。*/
-	virtual std::string GetProviderId() const = 0;
+	virtual const std::type_info& GetProviderId() const = 0;
 
 	/** 派生先のアセット独自の専用ロード処理を実現する。*/
 	virtual std::shared_ptr<AssetHandle> Provide(const std::string& assetPath)

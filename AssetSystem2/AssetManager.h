@@ -11,7 +11,7 @@ concept IProvider = std::derived_from<T, IAssetProvider>;
 
 /**
 * アセットマネージャークラスは、
-* システムやユーザーにインターフェイスを共通の提供するクラスです。
+* システムやユーザーに共通のインターフェイスを提供するクラスです。
 * 実際のロード処理やデータの保管はプロバイダーしか知りません。
 */
 class AssetManager
@@ -24,7 +24,7 @@ public:
 		m_assetProviders.emplace_back(std::make_shared<T>());
 	}
 
-	std::shared_ptr<IAssetProvider> GetProvider(const std::string& providerId) const
+	std::shared_ptr<IAssetProvider> GetProvider(const std::type_info& providerId) const
 	{
 		for (const auto& provider : m_assetProviders)
 		{
@@ -39,7 +39,13 @@ public:
 
 public:
 
-	std::shared_ptr<AssetHandle> Load(const std::string& providerId, const std::string& assetPath)
+	template<class T>
+	std::shared_ptr<AssetHandle> Load(const std::string& assetPath)
+	{
+		return Load(typeid(T), assetPath);
+	}
+
+	std::shared_ptr<AssetHandle> Load(const std::type_info& providerId, const std::string& assetPath)
 	{
 		std::shared_ptr<AssetHandle> newHandle;
 
