@@ -11,9 +11,9 @@ class ModelProvider : public IAssetProvider
 {
 public:
 
-    const std::type_info& GetProviderId() const override
+    std::string GetProviderId() const override
     {
-        return typeid(Model);
+        return "Model";
     }
 
     /** モデルアセットのロード処理を実現する。*/
@@ -35,6 +35,6 @@ int main()
     assetManager.RegisterProvider<ModelProvider>();
 
     // モデルデータをロードする。
-    auto handle = assetManager.Load<Model>("Test.model");
+    auto handle = assetManager.Load("Test.model");
     auto model = handle->Get<Model>();
 }

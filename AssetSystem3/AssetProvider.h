@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <memory>
 #include <concepts>
 #include <unordered_map>
 #include <assert.h>
@@ -16,7 +15,7 @@ class IAssetProvider
 public:
 
 	/** このプロバイダーを定義する一位のID、大抵の場合はアセットタイプを指す。*/
-	virtual const std::type_info& GetProviderId() const = 0;
+	virtual std::string GetProviderId() const = 0;
 
 	/** 派生先のアセット独自の専用ロード処理を実現する。*/
 	virtual std::shared_ptr<AssetHandle> Provide(const std::string& assetPath)

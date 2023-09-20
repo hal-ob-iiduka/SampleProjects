@@ -24,7 +24,7 @@ public:
 		m_assetProviders.emplace_back(std::make_shared<T>());
 	}
 
-	std::shared_ptr<IAssetProvider> GetProvider(const std::type_info& providerId) const
+	std::shared_ptr<IAssetProvider> GetProvider(const std::string& providerId) const
 	{
 		for (const auto& provider : m_assetProviders)
 		{
@@ -39,13 +39,7 @@ public:
 
 public:
 
-	template<class T>
-	std::shared_ptr<AssetHandle> Load(const std::string& assetPath)
-	{
-		return Load(typeid(T), assetPath);
-	}
-
-	std::shared_ptr<AssetHandle> Load(const std::type_info& providerId, const std::string& assetPath)
+	std::shared_ptr<AssetHandle> Load(const std::string& providerId, const std::string& assetPath)
 	{
 		std::shared_ptr<AssetHandle> newHandle;
 

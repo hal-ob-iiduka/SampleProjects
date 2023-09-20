@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="Asset.h" />
     <ClInclude Include="AssetHandle.h" />
+    <ClInclude Include="AssetLocation.h" />
     <ClInclude Include="AssetManager.h" />
     <ClInclude Include="AssetProvider.h" />
   </ItemGroup>

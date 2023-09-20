@@ -1,9 +1,9 @@
 #pragma once
-#include <string>
-#include <memory>
-#include <vector>
-#include "AssetProvider.h"
+#include <set>
+#include <unordered_map>
 #include "AssetHandle.h"
+#include "AssetLocation.h"
+#include "AssetProvider.h"
 
 /** IAssetProviderを継承したクラスのみ有効にするコンセプト */
 template<class T>
@@ -24,7 +24,7 @@ public:
 		m_assetProviders.emplace_back(std::make_shared<T>());
 	}
 
-	std::shared_ptr<IAssetProvider> GetProvider(const std::type_info& providerId) const
+	std::shared_ptr<IAssetProvider> GetProvider(const std::string& providerId) const
 	{
 		for (const auto& provider : m_assetProviders)
 		{
@@ -39,29 +39,52 @@ public:
 
 public:
 
-	template<class T>
 	std::shared_ptr<AssetHandle> Load(const std::string& assetPath)
 	{
-		return Load(typeid(T), assetPath);
+		if (auto location = GetAssetLocation(assetPath))
+		{
+			return Load(location);
+		}
+
+		std::shared_ptr<AssetHandle>();
 	}
 
-	std::shared_ptr<AssetHandle> Load(const std::type_info& providerId, const std::string& assetPath)
+	std::shared_ptr<AssetHandle> Load(std::shared_ptr<AssetLocation> assetLocation)
 	{
+		// 依存関係をロードリストに登録する
+		for (auto& dependence : assetLocation->m_dependencies)
+		{
+			Load(dependence);
+		}
+
 		std::shared_ptr<AssetHandle> newHandle;
 
 		// マッチするプロバイダーを取得
-		auto provider = GetProvider(providerId);
+		auto provider = GetProvider(assetLocation->m_providerId);
 		if (provider)
 		{
 			// プロバイダーから新しいアセットを取得する（ロードしてもらう）
-			newHandle = provider->Provide(assetPath);
+			newHandle = provider->Provide(assetLocation->m_assetPath);
 		}
 
 		return newHandle;
+	}
+
+	std::shared_ptr<AssetLocation> GetAssetLocation(const std::string& assetPath) const
+	{
+		if (m_assetLocationMap.contains(assetPath))
+		{
+			return m_assetLocationMap.at(assetPath);
+		}
+
+		return std::shared_ptr<AssetLocation>();
 	}
 
 private:
 
 	/** アセットのロード処理等を保持するプロバイダーリスト */
 	std::vector<std::shared_ptr<IAssetProvider>> m_assetProviders;
+
+	/** アセットパスから依存関係などを持つ、ロケーションへのマップ */
+	std::unordered_map<std::string, std::shared_ptr<AssetLocation>> m_assetLocationMap;
 };
