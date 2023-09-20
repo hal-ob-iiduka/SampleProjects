@@ -1,6 +1,5 @@
 ﻿#include <iostream>
 #include "AssetManager.h"
-#include "AssetProvider.h"
 
 class Model : public IAsset
 {

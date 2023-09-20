@@ -1,9 +1,7 @@
 #pragma once
-#include <string>
-#include <memory>
 #include <vector>
+#include <concepts>
 #include "AssetProvider.h"
-#include "AssetHandle.h"
 
 /** IAssetProviderを継承したクラスのみ有効にするコンセプト */
 template<class T>

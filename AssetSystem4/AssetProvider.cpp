@@ -1,5 +1,4 @@
 #include "AssetProvider.h"
-#include "AssetHandle.h"
 #include "AssetLoader.h"
 #include <assert.h>
 
@@ -68,19 +67,19 @@ std::shared_ptr<ProvidedData> IAssetProvider::ProvideInternal(const std::string&
 
 		// 非同期ロードの登録を行う。
 		LoadAssetAsync(assetPath, [this](auto assetPath)
+		{
+			auto newAsset = AsyncLoad(assetPath);
+			if (newAsset)
 			{
-				auto newAsset = AsyncLoad(assetPath);
-				if (newAsset)
-				{
-					AsyncLoadCallback(assetPath, newAsset);
-				}
-			});
+				AsyncLoadCallback(assetPath, newAsset);
+			}
+		});
 	}
 
 	return providedData;
 }
 
-void IAssetProvider::AsyncLoadCallback(const std::string& assetPath, std::shared_ptr<IAsset> asset)
+void IAssetProvider::AsyncLoadCallback(const std::string& assetPath, std::shared_ptr<IAsset> asset) const
 {
 	auto providedData = GetProvidedData(assetPath);
 	if (providedData)

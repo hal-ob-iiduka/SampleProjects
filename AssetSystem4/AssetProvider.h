@@ -1,8 +1,4 @@
 #pragma once
-#include <string>
-#include <memory>
-#include <concepts>
-#include <vector>
 #include <unordered_map>
 #include "AssetHandle.h"
 
@@ -81,7 +77,7 @@ protected:
 	virtual std::shared_ptr<ProvidedData> ProvideInternal(const std::string& assetPath);
 
 	/** 別スレッドでのロード処理完了後のコールバック関数 */
-	void AsyncLoadCallback(const std::string& assetPath, std::shared_ptr<IAsset> asset);
+	void AsyncLoadCallback(const std::string& assetPath, std::shared_ptr<IAsset> asset) const;
 
 	/** 供給データ（アセット）のロード完了時の処理を提供する。*/
 	virtual void CompletedLoadRequests(std::shared_ptr<ProvidedData> providedData) const;
