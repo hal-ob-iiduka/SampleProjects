@@ -1,4 +1,5 @@
 #include "LoadingThread.h"
+#include "COM.h"
 #include "Task.h"
 
 LoadingThread::LoadingThread()
@@ -33,6 +34,10 @@ void LoadingThread::Stop()
 
 void LoadingThread::ThreadLoop(const std::stop_token& st)
 {
+	// 読み込み処理等で使用されるため、COM オブジェクト生成。
+	// 特にTextureなどの初期化でバグが出る。（Windows限定処理）
+	COM com(COMID::MULTITHREADED);
+
 	while (true)
 	{
 		std::shared_ptr<ITask> task;

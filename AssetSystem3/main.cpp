@@ -34,6 +34,16 @@ int main()
     // プロバイダーの登録（これをしなかったら不正常な申請としてロードされない
     assetManager.RegisterProvider<ModelProvider>();
 
+    // 下記でロード処理を実行するため、簡単に新しくロケーションの追加する。
+    {
+        auto location = std::make_shared<AssetLocation>();
+        location->m_assetPath = "Test.model";
+        location->m_providerId = "Model";
+        location->m_dependencies = {}; // 今回はなし
+
+        assetManager.AddAssetLocation("Test.model", location);
+    }
+
     // モデルデータをロードする。
     auto handle = assetManager.Load("Test.model");
     auto model = handle->Get<Model>();

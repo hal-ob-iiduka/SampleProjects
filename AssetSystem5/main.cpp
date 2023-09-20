@@ -17,10 +17,10 @@ public:
     }
 
     /** モデルアセットのロード処理を実現する。*/
-    std::shared_ptr<IAsset> AsyncLoad(const std::string& assetPath) const override
+    std::shared_ptr<IAsset> AsyncLoad(const std::string& assetPath) override
     {
         // 専用ロード処理を実現しているとする。
-        std::cout << "モデルデータをロードしました。\n";
+        std::cout << "ロード中\n";
 
         // 成功すれば正常なアセットデータを返す。
         auto model = std::make_shared<Model>();
@@ -35,18 +35,13 @@ int main()
     // プロバイダーの登録（これをしなかったら不正常な申請としてロードされない
     assetManager.RegisterProvider<ModelProvider>();
 
-    // 下記でロード処理を実行するため、簡単に新しくロケーションの追加する。
-    {
-        auto location = std::make_shared<AssetLocation>();
-        location->m_assetPath = "Test.model";
-        location->m_providerId = "Model";
-        location->m_dependencies = {}; // 今回はなし
-
-        assetManager.AddAssetLocation("Test.model", location);
-    }
-
     // モデルデータをロードする。
-    auto handle = assetManager.Load("Test.model");
+    auto handle = assetManager.Load("Model", "Test.model");
+
+    handle->AddCompletedEvent([] 
+    {
+        std::cout << "完了！\n";
+    });
 
     // ロード終了するまで待機
     while (!handle->IsVaild())

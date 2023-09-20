@@ -2,8 +2,8 @@
 #include <vector>
 #include <functional>
 
-/**
-* UEのイベントっぽいのを実装したクラス
+/** 
+* UEのイベントっぽいのを実装したクラス 
 * 今のところ最低限しか実装していません。
 */
 template<class Fty>

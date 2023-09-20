@@ -39,7 +39,7 @@ public:
 
 public:
 
-	std::shared_ptr<AssetHandle> Load(const std::string& assetPath)
+	std::shared_ptr<AssetHandle> Load(const std::string& assetPath) const
 	{
 		if (auto location = GetAssetLocation(assetPath))
 		{
@@ -49,7 +49,7 @@ public:
 		std::shared_ptr<AssetHandle>();
 	}
 
-	std::shared_ptr<AssetHandle> Load(std::shared_ptr<AssetLocation> assetLocation)
+	std::shared_ptr<AssetHandle> Load(std::shared_ptr<AssetLocation> assetLocation) const
 	{
 		// ˆË‘¶ŠÖŒW‚ðƒ[ƒhƒŠƒXƒg‚É“o˜^‚·‚é
 		for (auto& dependence : assetLocation->m_dependencies)
@@ -68,6 +68,18 @@ public:
 		}
 
 		return newHandle;
+	}
+
+public:
+
+	void AddAssetLocation(const std::string& assetPath, std::shared_ptr<AssetLocation> assetLocation)
+	{
+		if (m_assetLocationMap.contains(assetPath))
+		{
+			return;
+		}
+
+		m_assetLocationMap.emplace(assetPath, assetLocation);
 	}
 
 	std::shared_ptr<AssetLocation> GetAssetLocation(const std::string& assetPath) const

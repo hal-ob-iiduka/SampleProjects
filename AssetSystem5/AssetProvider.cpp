@@ -67,14 +67,14 @@ std::shared_ptr<ProvidedData> IAssetProvider::ProvideInternal(const std::string&
 		providedData->m_asyncLoading = true;
 
 		// 非同期ロードの登録を行う。
-		LoadAssetAsync(assetPath, [this](auto assetPath)
+		LoadAssetAsync(assetPath, [this](auto assetPath) 
+		{
+			auto newAsset = AsyncLoad(assetPath);
+			if (newAsset)
 			{
-				auto newAsset = AsyncLoad(assetPath);
-				if (newAsset)
-				{
-					AsyncLoadCallback(assetPath, newAsset);
-				}
-			});
+				AsyncLoadCallback(assetPath, newAsset);
+			}
+		});
 	}
 
 	return providedData;

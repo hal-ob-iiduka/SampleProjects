@@ -1,19 +1,14 @@
 #pragma once
 #include <string>
 #include <memory>
-#include <vector>
 #include "AssetProvider.h"
-#include "AssetHandle.h"
+
+class AssetHandle;
 
 /** IAssetProviderを継承したクラスのみ有効にするコンセプト */
 template<class T>
 concept IProvider = std::derived_from<T, IAssetProvider>;
 
-/**
-* アセットマネージャークラスは、
-* システムやユーザーに共通のインターフェイスを提供するクラスです。
-* 実際のロード処理やデータの保管はプロバイダーしか知りません。
-*/
 class AssetManager
 {
 public:
@@ -27,7 +22,7 @@ public:
 	std::shared_ptr<IAssetProvider> GetProvider(const std::string& providerId) const
 	{
 		for (const auto& provider : m_assetProviders)
-		{
+		{			
 			if (provider->GetProviderId() == providerId)
 			{
 				return provider;

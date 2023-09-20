@@ -65,9 +65,6 @@ protected:
 		return std::shared_ptr<ProvidedData>();
 	}
 
-	/** 派生先のアセット独自の専用ロード処理を実現する。（別スレッドで実行される）*/
-	virtual std::shared_ptr<IAsset> AsyncLoad(const std::string& assetPath) const = 0;
-
 	/**
 	* 実際に非同期処理を実行させる関数。
 	* 既にロード済みデータがある場合、読み込みは行われず直ぐに完了イベントが実行される。
@@ -79,6 +76,9 @@ protected:
 	* 戻り値は「ロード済み」または「ロード中」必ずどちらかになる。
 	*/
 	virtual std::shared_ptr<ProvidedData> ProvideInternal(const std::string& assetPath);
+
+	/** 派生先のアセット独自の専用ロード処理を実現する。（別スレッドで実行される）*/
+	virtual std::shared_ptr<IAsset> AsyncLoad(const std::string& assetPath) = 0;
 
 	/** 別スレッドでのロード処理完了後のコールバック関数 */
 	void AsyncLoadCallback(const std::string& assetPath, std::shared_ptr<IAsset> asset);
