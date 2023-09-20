@@ -12,7 +12,7 @@ public:
     }
 
     /** モデルアセットのロード処理を実現する。*/
-    std::shared_ptr<IAsset> Provide(const std::string& assetPath) const override
+    std::shared_ptr<IAsset> Load(const std::string& assetPath) const override
     {
         // 専用ロード処理を実現しているとする。
         std::cout << "モデルデータをロードしました。\n";
@@ -35,5 +35,5 @@ int main()
     assetManager.RegisterProvider<ModelProvider>();
 
     // モデルデータをロードする。
-    auto model = assetManager.Load<Model>("Model", "Test.model");
+    auto model = assetManager.Load("Model", "Test.model");
 }
